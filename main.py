@@ -17,4 +17,6 @@ from pytorch_lightning.trainer import Trainer
 trainer = Trainer()
 trainer.fit(model)
 
+#TODO Add click cli interface for accepting args
+
 
