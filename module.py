@@ -33,7 +33,7 @@ class BaseModule(LightningModule):
 
         dataloader = DataLoader(
             ds, batch_size=self.hparams.batch_size,
-            shuffle=True, num_workers=6,
+            shuffle=True, num_workers=1,
             pin_memory=True, collate_fn=utils.collate_fn
 
         )
@@ -71,7 +71,7 @@ class TextGNNModule(BaseModule):
         # Convert the batch to graph batch
         # For each batch we need
 
-        x, nx, ew, y= utils.make_graph(batch, self.vocab, self.hparams.n_neighbours)
+        x, nx, ew, y= utils.make_graph(batch, self.vocab, self.hparams.n_neighbours, device=self.device)
 
         x = x.long()
         nx = nx.long()

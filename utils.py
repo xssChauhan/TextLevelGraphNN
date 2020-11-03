@@ -10,6 +10,8 @@ from typing import Iterable
 from typing import Tuple
 from typing import Union
 
+from torch import device
+
 
 def clean_and_tokenize(text: str) -> List[str]:
 
@@ -142,7 +144,7 @@ def get_neighbours(X: torch.Tensor, n_neighbours: int=2) -> torch.Tensor:
     
     return torch.Tensor(neighbours)
 
-def make_graph(batch:Tuple[torch.Tensor, torch.Tensor], vocab: Dict[str, int], n_neighbours: int):
+def make_graph(batch:Tuple[torch.Tensor, torch.Tensor], vocab: Dict[str, int], n_neighbours: int, device='cpu'):
 
         batch_size, max_len = batch[1].shape
 
@@ -150,15 +152,15 @@ def make_graph(batch:Tuple[torch.Tensor, torch.Tensor], vocab: Dict[str, int], n
 
         neighbours = torch.zeros((
             batch_size, max_len, 2*n_neighbours
-        ))
+        )).to(device)
         edges = torch.zeros((
             batch_size, max_len, 2*n_neighbours
-        ))
+        )).to(device)
 
         for i, data in enumerate(batch[1]):
             data = data[data > 0]
             length = len(data)
-            nx = get_neighbours(data, n_neighbours)
+            nx = get_neighbours(data, n_neighbours).to(device)
             ed = ((data[data > 0]-1)*nb_nodes).reshape(-1,1) + nx
             ed[nx == 0] = 0
 
